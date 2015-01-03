@@ -1,0 +1,35 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{longtable}
+\usepackage{graphicx}
+\usepackage[textwidth=4cm]{todonotes}
+\usepackage[linkcolor=blue, colorlinks]{hyperref}
+
+
+\begin{document}
+ 
+
+\newpage
+<<echo=FALSE>>=
+library(ggplot2)
+library(plyr)
+data <- read.table('statistics', sep='\t', encoding='ascii', header=T)
+@
+
+\begin{longtable}{l l}
+\textbf{Side} & \textbf{Kommentar} \\
+\hline
+\endhead
+<<results='asis', echo=FALSE>>=
+for(tempIdx in seq(1, nrow(data)))
+{
+  cat(sprintf("%s & %s \\\\\n",
+      data[tempIdx, ]$Page,
+      data[tempIdx, ]$Comment))
+}
+@
+\end{longtable}
+
+
+
+\end{document}
