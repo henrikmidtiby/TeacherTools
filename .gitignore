@@ -1,0 +1,10 @@
+*.swp
+*~
+extract pdf comments/collectedComments-concordance.tex
+extract pdf comments/collectedComments.log
+extract pdf comments/collectedComments.pdf
+extract pdf comments/collectedComments.synctex.gz
+extract pdf comments/collectedComments.tex
+extract pdf comments/collectedComments.toc
+extract pdf comments/framed.sty
+extract pdf comments/statistics
