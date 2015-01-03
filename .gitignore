@@ -8,3 +8,14 @@ extract pdf comments/collectedComments.tex
 extract pdf comments/collectedComments.toc
 extract pdf comments/framed.sty
 extract pdf comments/statistics
+extract comments from written exams/collectedComments-concordance.tex
+extract comments from written exams/collectedComments.log
+extract comments from written exams/collectedComments.pdf
+extract comments from written exams/collectedComments.synctex.gz
+extract comments from written exams/collectedComments.tdo
+extract comments from written exams/collectedComments.tex
+extract comments from written exams/collectedComments.toc
+extract comments from written exams/figure/
+extract comments from written exams/framed.sty
+extract comments from written exams/statistics
+extract pdf comments/.Rhistory
