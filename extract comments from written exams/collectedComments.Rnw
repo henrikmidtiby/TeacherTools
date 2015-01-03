@@ -65,8 +65,9 @@ extraPoints$Point <- round(extraPoints$Point * 1. / 0.85, 2)
 # Determined such that the 15 points from the counting activites
 # will count 15% of the final evaluation.
 scalingFactor <- 15 / (90*0.15 + 0.15*15)
+scalingFactor <- 1
 
-data <- rbind(data, extraPoints) 
+#data <- rbind(data, extraPoints) 
 data$ID <- factor(data$ID)
 @
 
@@ -120,7 +121,7 @@ for(oneExercise in levels(data$Exercise))
 \subsection{Oversigt over givne point}
 <<echo=FALSE, fig=TRUE>>=
 tempData <- subset(data, data$Exercise != "SemesterActivity")
-ggplot(tempData) + geom_point(aes(Exercise, ID))
+ggplot(tempData) + geom_point(aes(Exercise, ID), size=5)
 @
 
 \newpage
