@@ -67,6 +67,9 @@ def main():
     command += " cat output outputfile.pdf"
     print(command)
     os.system(command)
+    os.system("pdf2ps outputfile.pdf temp.ps")
+    os.system("ps2pdf temp.ps temp2.pdf")
+
 
 # Function for splitting comments in three parts:
 # * exerciseid
