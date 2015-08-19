@@ -8,22 +8,23 @@
 
 \newcommand{\gradingScale}[1]{
 \begin{tikzpicture}[remember picture, overlay, xshift=-5cm, scale=0.7]
+% Grades are on the scale [0; 10]
 \draw[line width=0.5cm, white] (0, 0) rectangle (10, 1);
 \draw (0, 0) rectangle (10, 1);
-\draw (  1.9, 0) -- ++ (0, 1);
-\draw (	3.8, 0) -- ++ (0, 1);
-\draw (	4.9, 0) -- ++ (0, 1);
-\draw (	6.1, 0) -- ++ (0, 1);
-\draw (	7.8, 0) -- ++ (0, 1);
-\draw (	9.0, 0) -- ++ (0, 1);
+\draw ( 2.7, 0) -- ++ (0, 1);
+\draw (	4.4, 0) -- ++ (0, 1);
+\draw (	5.4, 0) -- ++ (0, 1);
+\draw (	6.5, 0) -- ++ (0, 1);
+\draw (	8.0, 0) -- ++ (0, 1);
+\draw (	9.1, 0) -- ++ (0, 1);
 
-\draw (0.95, 0.5) node{-03};
-\draw (2.85, 0.5) node{00};
-\draw (4.45, 0.5) node{02};
-\draw (5.5, 0.5) node{4};
-\draw (6.95, 0.5) node{7};
-\draw (8.4, 0.5) node{10};
-\draw (9.5, 0.5) node{12};
+\draw (1.35, 0.5) node{-03};
+\draw (3.55, 0.5) node{00};
+\draw (4.9, 0.5) node{02};
+\draw (6.05, 0.5) node{4};
+\draw (7.25, 0.5) node{7};
+\draw (8.55, 0.5) node{10};
+\draw (9.55, 0.5) node{12};
 
 \draw[blue, fill=blue!40] (#1, 0.5) circle(0.2cm);
 \end{tikzpicture}
@@ -33,53 +34,51 @@
 \tableofcontents 
 
 \newpage
-\section{Indlæser data}
-<<echo=FALSE>>=
+\section{Indlæsning af data og hurtig test}
+<<echo=FALSE, message=FALSE>>=
 library(ggplot2)
 library(plyr)
+library(dplyr)
+library(tidyr)
+library(corrgram)
+
 data <- read.table('statistics', sep='\t', encoding='ascii', header=T, quote="")
-#data$Comment <- gsub("æ", "ae", data$Comment)
-#data$Comment <- gsub("ø", "oe", data$Comment)
-#data$Comment <- gsub("å", "aa", data$Comment)
-#data$Comment <- gsub("\\\\r", " ", data$Comment)
-#data$Comment <- gsub("\\\\", "", data$Comment)
-#data$Comment <- gsub("%", "\\%", data$Comment)
 data$ID <- factor(data$ID)
-# Make anonymous
-#data$ID <- factor(data$ID, levels=levels(data$ID), labels=seq(length(levels(data$ID))))
+data$ExerciseNames <- sprintf("E%s", data$Exercise)
 
-extraPoints <- read.table('pointsFromCountingActivities.csv', sep=';', header=TRUE)
-extraPoints <- extraPoints[, c(2, 3)]
-extraPoints <- subset(extraPoints, extraPoints$ID != '')
-extraPoints$Exercise <- 'SemesterActivity'
-extraPoints$Comment <- ''
-extraPoints$Point <- round(extraPoints$Point * 1. / 0.85, 2)
+weights = data.frame(
+  ExerciseNames = c("E0a", "E0b", "E1a", "E1b", "E2a", "E2b", 
+                    "E3a", "E3b", "E3c", "E4a", "E4b", "E4c"), 
+  weight = c(10. / 30, 1, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8, 0.8))
 
-
-# (a*15) / (100 + a*15) == 0.15
-# (a*15) == 0.15 * (100 + a*15)
-# a*15 == 15 + 0.15*a*15
-# a * (100*0.15 + 0.15*15) = 15
-# a = 15 / (100*0.15 + 0.15*15)
-# a = 15 / (90*0.15 + 0.15*15)
-# Determined such that the 15 points from the counting activites
-# will count 15% of the final evaluation.
-scalingFactor <- 15 / (90*0.15 + 0.15*15)
-scalingFactor <- 1
-
-#data <- rbind(data, extraPoints) 
-data$ID <- factor(data$ID)
+studentScores <- data %>%
+  merge(weights) %>%
+  mutate(WeightedScore = Point * weight) %>%
+  group_by(ID) %>%
+  summarise(totalScore = sum(WeightedScore))
 @
-
-\section{Grupperinger og data oversigt}
+\subsection{Opgaver}
 <<echo=FALSE>>=
-levels(data$Exercise)
 levels(data$ID)
-summary(data)
 @
-Antal vurderede delopgaver i hver besvarelse.
+\subsection{Studerende}
+<<echo=FALSE>>=
+levels(data$ID)
+@
+\subsection{Antal bedømte delopgaver i hver besvarelse}
 <<echo=FALSE>>=
 ddply(na.omit(data), .(ID), function (df) {return(data.frame(nrow = nrow(df), points = sum(df$Point)))})
+@
+\subsection{Manglende bedømmelser}
+<<echo=FALSE, warning=FALSE>>=
+combinationsIDAndExercises <- unique(data$ID) %>%
+  merge(unique(data$ExerciseNames)) %>%
+  mutate(ID = x, ExerciseNames = y) %>%
+  select(-x, -y) %>%
+  filter(ExerciseNames != "ENA")
+missingCombinations <- combinationsIDAndExercises %>%
+  anti_join(data, by=c("ID", "ExerciseNames"))
+missingCombinations
 @
 
 \newpage
@@ -90,9 +89,10 @@ for(oneId in levels(data$ID))
   cat(sprintf("\\subsection{%s}\n", oneId))
   cat(sprintf("\\label{ssecID%s}\n", oneId))
   temp <- subset(data, data$ID == oneId)
+  tempStudentScore <- subset(studentScores, studentScores$ID == oneId)
   totalPoints <- sum(temp$Point, na.rm = TRUE)
-  cat(sprintf("Point: %s\n\\hfill", round(totalPoints, 2)))
-  cat(sprintf("\\gradingScale{%.1f}\\newline", totalPoints * scalingFactor * 0.1))
+  cat(sprintf("Point: %s\n\\hfill", round(tempStudentScore$totalScore, 2)))
+  cat(sprintf("\\gradingScale{%.1f}\\newline", tempStudentScore$totalScore * 0.1))
   temp$strings <- sprintf("\\textbf{\\hyperref[ssecExercise%s]{%s} - %s}: %s \\\\\n", temp$Exercise, temp$Exercise, temp$Point, temp$Comment)
   cat(temp$strings)
   cat("\n\n")
@@ -124,6 +124,7 @@ tempData <- subset(data, data$Exercise != "SemesterActivity")
 ggplot(tempData) + geom_point(aes(Exercise, ID), size=5)
 @
 
+
 \newpage
 \subsection{Point fordeling for opgaverne}
 <<echo=FALSE, fig=TRUE, fig.height=4>>=
@@ -134,7 +135,8 @@ ggplot(tempData) + geom_bar(aes(Exercise, fill=factor(Point))) + coord_flip()
 \newpage
 \subsection{Bedste og dårligste halvdel}
 <<echo=FALSE>>=
-passed <- ddply(na.omit(tempData), .(ID), summarise, PointTotal = sum(Point)*scalingFactor)
+passed <- studentScores
+passed$PointTotal <- studentScores$totalScore
 passed$passed <- passed$PointTotal > median(passed$PointTotal)
 temp <- merge(tempData, passed)
 temp$passed <- factor(temp$passed, levels=c(TRUE, FALSE), labels=c('Bedste', 'Dårligste'))
@@ -143,15 +145,36 @@ ggplot(na.omit(temp)) + geom_boxplot(aes(Exercise, Point, fill=passed)) + coord_
 
 \newpage
 \subsection{Karakterfordeling ud fra vejledende pointskala}
-<<echo=FALSE, fig=TRUE>>=
-tempdata <- ddply(na.omit(data), .(ID), function (df) {return(data.frame(nrow = nrow(df), points = sum(df$Point)))})
-ggplot(tempdata, aes(points * scalingFactor)) + 
+<<echo=FALSE, fig=TRUE, warning=FALSE>>=
+studentScores$ecdf <- rank(studentScores$totalScore, ties.method = "first") / nrow(studentScores)
+ggplot(studentScores, aes(totalScore)) + 
   stat_ecdf(geom='point') + stat_ecdf() + 
-  geom_vline(xintercept=c(90, 78, 62, 51, 40, 15), alpha=0.3) + 
+  geom_vline(xintercept=c(91, 80, 65, 54, 44, 27), alpha=0.3) + 
   xlim(0, 100) + 
-  geom_text(data = data.frame(x = c(7, 27, 45, 56, 70, 84, 95), val = c('-03', '00', '02', '4', '7', '10', '12')), aes(x, 0.15, label=val)) + 
+  geom_text(data = data.frame(x = c(13, 36, 50, 61, 72, 86, 96), val = c('-03', '00', '02', '4', '7', '10', '12')), aes(x, -0.05, label=val)) + 
+  geom_text(data = data.frame(x = c(91, 80, 65, 54, 44, 27)), aes(x, -0.05, label=sprintf('%d %%', x), angle=-90)) + 
   xlab("Procent af fuld besvarelse") + 
-  ylab("")
+  ylab("") +
+  geom_text(aes(totalScore, ecdf, label = ID), angle = -15, hjust = 1.2) + 
+  geom_point(aes(totalScore, ecdf))
+@
+
+
+\newpage
+\subsection{Korrelationer mellem de enkelte opgaver og samlet score}
+<<echo=FALSE>>=
+temp <- data %>%
+  na.omit() %>%
+  select(ID, Exercise, Point) %>%
+  mutate(ExerciseNames = sprintf("E%s", Exercise)) %>%
+  select(-Exercise) %>%
+  spread(ExerciseNames, Point) %>%
+  merge(studentScores) %>%
+  select(-ID, -ecdf)
+
+corrgram(temp, order=TRUE, lower.panel=panel.shade,
+  upper.panel=panel.pie, text.panel=panel.txt, 
+  main="Correlation between exercises")
 @
 
 \listoftodos

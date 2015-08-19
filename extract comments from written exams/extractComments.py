@@ -97,7 +97,7 @@ def main():
 # * comments.
 # This is returned as a tuple.
 def splitComment(comment):
-    val = re.match("([123456789]+[abcde]) (\d+)\s*(.*)", comment)
+    val = re.match("([0123456789]+[abcde]) (\d+)\s*(.*)", comment)
     if(val):
         exercise = val.group(1)
         point = val.group(2)
