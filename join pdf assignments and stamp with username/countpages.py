@@ -67,9 +67,9 @@ def main():
     command += " cat output outputfile.pdf"
     print(command)
     os.system(command)
-    os.system("pdf2ps outputfile.pdf temp.ps")
-    os.system("ps2pdf temp.ps temp2.pdf")
-
+    #os.system("pdf2ps outputfile.pdf temp.ps")
+    #os.system("ps2pdf temp.ps temp2.pdf")
+    os.system("./gs-916-linux_x86 -dPDFA -dBATCH -dNOPAUSE -sProcessColorModel=DeviceCMYK -sDEVICE=pdfwrite -sOutputFile=output_filename.pdf outputfile.pdf")
 
 # Function for splitting comments in three parts:
 # * exerciseid
