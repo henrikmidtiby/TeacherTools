@@ -139,7 +139,8 @@ See: http://freemind.sourceforge.net/
 <xsl:template match="node">
 
 	<xsl:if test="(count(ancestor::node())-2)=0">
-		<xsl:apply-templates/>
+		<!-- Only export the first presentation -->
+		<xsl:apply-templates select="node[1]"/>
 	</xsl:if>
 	<xsl:if test="(count(ancestor::node())-2)=1">
 <xsl:text>
@@ -187,7 +188,6 @@ See: http://freemind.sourceforge.net/
 	\vspace{-0.5cm}
 }
 </xsl:text>
-
 
 		<xsl:apply-templates/>
 		<xsl:text>\end{document}</xsl:text>
