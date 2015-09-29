@@ -77,56 +77,35 @@ See: http://freemind.sourceforge.net/
  </xsl:character-map> 
 
 
-
 <xsl:template match="map">
 
 <!-- ==== HEADER ==== -->
+<xsl:text disable-output-escaping="yes">%&amp; -jobname newfilenameialwayswanted</xsl:text>
 <xsl:text>
-
 % !TEX encoding = latin1
 \documentclass[usepdftitle=false,professionalfonts,compress ]{beamer}
 
-%Packages to be included
-\usepackage[latin1]{inputenc}
-
-</xsl:text>
+% Packages to be included
+\usepackage[latin1]{inputenc}</xsl:text>
 <xsl:if test="node/attribute/@NAME = 'usepackage' ">
-	<xsl:text>&#xD;\usepackage{</xsl:text>
+	<xsl:text>
+\usepackage{</xsl:text>
 	<xsl:value-of select="node/attribute[@NAME = 'usepackage']/@VALUE" disable-output-escaping="yes"/>
 	<xsl:text>}</xsl:text>
 </xsl:if>
 
-
-%%%%%% Beamer Theme %%%%%%%%%%%%%
+% Beamer Theme
 <xsl:choose>
 	<xsl:when test="node/attribute/@NAME = 'theme' ">
-		<xsl:text>&#xD;\usetheme[]{</xsl:text>
+		<xsl:text>\usetheme[]{</xsl:text>
 		<xsl:value-of select="node/attribute[@NAME = 'theme']/@VALUE" disable-output-escaping="yes"/>
 		<xsl:text>}</xsl:text>
 	</xsl:when>
 	<xsl:otherwise>
-		<xsl:text>
-\usetheme[]{Darmstadt}
-		</xsl:text>
+		<xsl:text>\usetheme[]{Darmstadt}</xsl:text>
 	</xsl:otherwise>
 </xsl:choose>
 
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%% Begin Document  %%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%   
-%%%%%%%%%% Content starts here %%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-<!-- <xsl:apply-templates select="node"/> -->
 <xsl:apply-templates/>
 
 </xsl:template>
@@ -139,14 +118,10 @@ See: http://freemind.sourceforge.net/
 <xsl:template match="node">
 
 	<xsl:if test="(count(ancestor::node())-2)=0">
-		<!-- Only export the first presentation -->
 		<xsl:apply-templates select="node[1]"/>
 	</xsl:if>
 	<xsl:if test="(count(ancestor::node())-2)=1">
-<xsl:text>
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%% PDF meta data inserted here %%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+<xsl:text>% PDF meta data inserted here 
 \hypersetup{
 	pdftitle={</xsl:text><xsl:value-of select="current()/@TEXT" disable-output-escaping="yes"/><xsl:text>},
 	pdfauthor={</xsl:text><xsl:if test="current()/attribute/@NAME = 'author' "><xsl:value-of select="current()/attribute[@NAME = 'author']/@VALUE" disable-output-escaping="yes"/></xsl:if><xsl:text>}
@@ -154,56 +129,62 @@ See: http://freemind.sourceforge.net/
 </xsl:text>
 
 
-
 <xsl:text disable-output-escaping="yes">
-\title{</xsl:text><xsl:value-of select="current()/@TEXT" disable-output-escaping="yes"/><xsl:text>}</xsl:text>
+\title{</xsl:text><xsl:value-of select="current()/@TEXT" disable-output-escaping="yes"/><xsl:text>}
+</xsl:text>
 
 <xsl:if test="current()/attribute/@NAME = 'subtitle' ">
-	<xsl:text>&#xD;\subtitle{</xsl:text>
+	<xsl:text>\subtitle{</xsl:text>
 	<xsl:value-of select="current()/attribute[@NAME = 'subtitle']/@VALUE" disable-output-escaping="yes"/>
-	<xsl:text>}</xsl:text>
+	<xsl:text>}
+</xsl:text>
 </xsl:if>
 <xsl:if test="current()/attribute/@NAME = 'author' ">
-	<xsl:text>&#xD;\author{</xsl:text>
+	<xsl:text>\author{</xsl:text>
 	<xsl:value-of select="current()/attribute[@NAME = 'author']/@VALUE" disable-output-escaping="yes"/>
-	<xsl:text>}</xsl:text>
+	<xsl:text>}
+</xsl:text>
 </xsl:if>
 <xsl:if test="current()/attribute/@NAME = 'institute' ">
-	<xsl:text>&#xD;\institute{</xsl:text>
+	<xsl:text>\institute{</xsl:text>
 	<xsl:value-of select="current()/attribute[@NAME = 'institute']/@VALUE" disable-output-escaping="yes"/>
-	<xsl:text>}</xsl:text>
+	<xsl:text>}
+</xsl:text>
 </xsl:if>
 <xsl:if test="current()/attribute/@NAME = 'date' ">
-	<xsl:text>&#xD;\date{</xsl:text>
+	<xsl:text>\date{</xsl:text>
 	<xsl:value-of select="current()/attribute[@NAME = 'date']/@VALUE" disable-output-escaping="yes"/>
-	<xsl:text>}</xsl:text>
+	<xsl:text>}
+</xsl:text>
 </xsl:if>
 
 <xsl:text>
-
 \begin{document}
 \frame[plain]{
 	\frametitle{}
 	\titlepage
 	\vspace{-0.5cm}
 }
+
 </xsl:text>
 
-		<xsl:apply-templates/>
+		<xsl:apply-templates select="node"/>
 		<xsl:text>\end{document}</xsl:text>
 	</xsl:if>
 		
 	<xsl:if test="(count(ancestor::node())-2)=2">
-		<xsl:text>\section{</xsl:text><xsl:value-of select="@TEXT" disable-output-escaping="yes"/><xsl:text>}</xsl:text>
-		<xsl:apply-templates/>
+		<xsl:text>\section{</xsl:text><xsl:value-of select="@TEXT" disable-output-escaping="yes"/><xsl:text>}&#xA;&#xA;</xsl:text>
+<!--		<xsl:apply-templates/> -->
+		<xsl:apply-templates select="node"/>
 	</xsl:if>
 	
 	<xsl:if test="(count(ancestor::node())-2)=3">
-		<xsl:text>\subsection{</xsl:text><xsl:value-of select="@TEXT" disable-output-escaping="yes"/><xsl:text>}</xsl:text>
-		<xsl:apply-templates/>
+		<xsl:text>\subsection{</xsl:text><xsl:value-of select="@TEXT" disable-output-escaping="yes"/><xsl:text>}&#xA;&#xA;</xsl:text>
+<!--		<xsl:apply-templates/> -->
+		<xsl:apply-templates select="node"/>
 	</xsl:if>
 	<xsl:if test="(count(ancestor::node())-2)=4"> <!-- We are starting a frame-->
-		<xsl:text>&#xD;{&#xD;</xsl:text>
+		<xsl:text>{&#xA;</xsl:text>
 		
 		<xsl:text>\begin{frame}</xsl:text>
 
@@ -214,8 +195,8 @@ See: http://freemind.sourceforge.net/
 			<xsl:text>]</xsl:text>
 		</xsl:if>
 
-		<xsl:text>\frametitle{</xsl:text><xsl:value-of select="(@TEXT)" disable-output-escaping="yes"/>
-		<xsl:text>}&#xD;</xsl:text>
+		<xsl:text>&#xA;\frametitle{</xsl:text><xsl:value-of select="(@TEXT)" disable-output-escaping="yes"/>
+		<xsl:text>}</xsl:text>
 		<xsl:if test = "contains(current()/richcontent/@TYPE,'NOTE') ">
 			<xsl:call-template name="richtext"></xsl:call-template>
 		</xsl:if>
@@ -223,19 +204,21 @@ See: http://freemind.sourceforge.net/
 		<xsl:if test="current()/node and current()/node/@TEXT != ''">
 			<xsl:call-template name="itemization"></xsl:call-template>
 		</xsl:if>
-		<xsl:text>&#xD;\end{frame}&#xD;</xsl:text>
-		<xsl:text>}</xsl:text>
-		<xsl:apply-templates/>
+		<xsl:text>&#xA;\end{frame}&#xA;</xsl:text>
+		<xsl:text>}&#xA;&#xA;</xsl:text>
+
+<!--		<xsl:apply-templates/> -->
+		<xsl:apply-templates select="node"/>
 	</xsl:if>
 </xsl:template>
 
 
 <xsl:template name="itemization">
 	<xsl:param name="i" select="current()/node"/>
-	<xsl:text>&#xD;&#xA;\begin{itemize}</xsl:text>
+	<xsl:text>&#xA;\begin{itemize}</xsl:text>
 	<xsl:for-each select="$i">
 		<xsl:text>&#xA;</xsl:text>
-		<xsl:text>	\item </xsl:text>
+		<xsl:text>\item </xsl:text>
 		<xsl:value-of select="@TEXT" disable-output-escaping="yes"/>
 		
 		<xsl:if test="current()/node">
@@ -244,7 +227,7 @@ See: http://freemind.sourceforge.net/
 		<xsl:text> </xsl:text>	
 	</xsl:for-each>
 
-	<xsl:text>&#xA;\end{itemize}&#xA;</xsl:text>
+	<xsl:text>&#xA;\end{itemize}</xsl:text>
 </xsl:template>
 
 
@@ -257,25 +240,6 @@ See: http://freemind.sourceforge.net/
 		<xsl:text> </xsl:text>
 	</xsl:for-each>
 </xsl:template>
-
-
-<xsl:template name="block_itemize">
-	<xsl:param name="i" select="current()/node"/>
-	<xsl:text>&#xD;&#xA;&#x9;\begin{itemize}&#xD;&#xA;</xsl:text>
-	<xsl:for-each select="$i">
-		<xsl:text>	\item </xsl:text>
-		<xsl:value-of select="@TEXT" disable-output-escaping="yes"/>
-		<xsl:text>&#xD;</xsl:text>
-		
-		<xsl:if test="current()/node">
-			<xsl:call-template name="block_itemize"></xsl:call-template>
-		</xsl:if>
-		<xsl:text>
-		</xsl:text>	
-	</xsl:for-each>
-	<xsl:text>		\end{itemize}&#xA;</xsl:text>
-</xsl:template>
-
 
 <xsl:template match="text">
    <Notes><xsl:value-of select="text" disable-output-escaping="yes"/></Notes>
