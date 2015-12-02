@@ -1,12 +1,11 @@
 # Script for cleaning up images of hand drawn sketches.
 # Author: Henrik Skov Midtiby
-# Date: 2014-10-10
-# Version: 0.1
+# Date: 2015-12-02
+# Version: 0.2
 
 import sys
-sys.path.append('/opt/ros/hydro/lib/python2.7/dist-packages')
-import cv2
 import numpy as np
+import cv2
 
 def locate_first_and_last_false(input_list):
     first_index_of_false_value = -1
@@ -44,29 +43,48 @@ def locate_blue_regions(hsv):
 def main(filename):
     kernel_size = 35
     img = cv2.imread(filename)
-    kernel = np.ones((kernel_size, kernel_size), np.uint8)
-    blackhat = cv2.morphologyEx(img, cv2.MORPH_BLACKHAT, kernel)
-    temp = 255 - blackhat
 
-    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-    red_regions = locate_red_regions(hsv)
-    blue_regions = locate_blue_regions(hsv)
+    image_with_adjusted_background = adjust_background(img, kernel_size)
 
-    # Threshold image.
-    grayscale = cv2.cvtColor(temp, cv2.cv.CV_RGB2GRAY)
-    _, thresholded = cv2.threshold(grayscale, 220, 255, cv2.THRESH_BINARY)
+    blue_regions, red_regions = locate_red_and_blue_regions(img)
+
+    thresholded_image = threshold_image(image_with_adjusted_background)
     thresholdedfilename = "%s.thresholded.png" % filename
-    cv2.imwrite(thresholdedfilename, thresholded)
+    cv2.imwrite(thresholdedfilename, thresholded_image)
 
-    colored_image = cv2.cvtColor(thresholded, cv2.cv.CV_GRAY2RGB)
-    colored_image = cv2.bitwise_or(colored_image, (0, 0, 255), colored_image, mask=red_regions)
-    colored_image = cv2.bitwise_or(colored_image, (255, 0, 0), colored_image, mask=blue_regions)
+    colored_image = color_output_image(blue_regions, red_regions, thresholded_image)
     colored_image_filename = "%s.coloredimage.png" % filename
     cv2.imwrite(colored_image_filename, colored_image)
 
 
+def color_output_image(blue_regions, red_regions, thresholded_image):
+    colored_image = cv2.cvtColor(thresholded_image, cv2.COLOR_GRAY2RGB)
+    colored_image = cv2.bitwise_or(colored_image, (0, 0, 255), colored_image, mask=red_regions)
+    colored_image = cv2.bitwise_or(colored_image, (255, 0, 0), colored_image, mask=blue_regions)
+    return colored_image
+
+
+def locate_red_and_blue_regions(img):
+    hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+    red_regions = locate_red_regions(hsv)
+    blue_regions = locate_blue_regions(hsv)
+    return blue_regions, red_regions
+
+
+def threshold_image(image_with_adjusted_background):
+    grayscale = cv2.cvtColor(image_with_adjusted_background, cv2.COLOR_RGB2GRAY)
+    _, thresholded = cv2.threshold(grayscale, 220, 255, cv2.THRESH_BINARY)
+    return thresholded
+
+
+def adjust_background(img, kernel_size):
+    kernel = np.ones((kernel_size, kernel_size), np.uint8)
+    blackhat = cv2.morphologyEx(img, cv2.MORPH_BLACKHAT, kernel)
+    temp = 255 - blackhat
+    return temp
+
+
 if len(sys.argv) == 1:
-    # main('2014-10-29 13.45.09.jpg')
     print("Program called with no input files.")
     print("Drag a file onto the program.")
     var = raw_input("Please enter something: ")
