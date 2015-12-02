@@ -9,34 +9,37 @@ import cv2
 import numpy as np
 
 def locate_first_and_last_false(inputlist):
-    firstIndexOfFalseValue = -1
-    lastIndexOfFalseValue = -1
+    first_index_of_false_value = -1
+    last_index_of_false_value = -1
     for idx, elem in enumerate(inputlist.tolist()):
         if elem is False:
-            if firstIndexOfFalseValue is -1:
-                firstIndexOfFalseValue = idx
-            lastIndexOfFalseValue = idx
-    return firstIndexOfFalseValue, lastIndexOfFalseValue
+            if first_index_of_false_value is -1:
+                first_index_of_false_value = idx
+            last_index_of_false_value = idx
+    return first_index_of_false_value, last_index_of_false_value
+
 
 def locate_red_regions(hsv):
-    lower_red = np.array([0,50,100])
-    upper_red = np.array([15,255,255])
-    redRegions1 = cv2.inRange(hsv, lower_red, upper_red)
-    lower_red = np.array([165,50,100])
-    upper_red = np.array([189,255,255])
-    redRegions2 = cv2.inRange(hsv, lower_red, upper_red)
-    redregions = redRegions1 + redRegions2
+    lower_red = np.array([0, 50, 100])
+    upper_red = np.array([15, 255, 255])
+    red_regions_1 = cv2.inRange(hsv, lower_red, upper_red)
+    lower_red = np.array([165, 50, 100])
+    upper_red = np.array([189, 255, 255])
+    red_regions_2 = cv2.inRange(hsv, lower_red, upper_red)
+    red_regions = red_regions_1 + red_regions_2
     kernel = np.ones((3, 3), np.uint8)
-    redregions = cv2.dilate(redregions, kernel, iterations = 1)
-    return redregions
+    red_regions = cv2.dilate(red_regions, kernel, iterations=1)
+    return red_regions
+
 
 def locate_blue_regions(hsv):
-    lower_blue = np.array([100,50,50])
-    upper_blue = np.array([140,255,255])
+    lower_blue = np.array([100, 50, 50])
+    upper_blue = np.array([140, 255, 255])
     blueRegions = cv2.inRange(hsv, lower_blue, upper_blue)
     kernel = np.ones((3, 3), np.uint8)
-    blueRegions = cv2.dilate(blueRegions, kernel, iterations = 1)
+    blueRegions = cv2.dilate(blueRegions, kernel, iterations=1)
     return blueRegions
+
 
 def main(filename):
     kernel_size = 35
@@ -61,13 +64,12 @@ def main(filename):
     coloredImageFilename = "%s.coloredimage.png" % filename
     cv2.imwrite(coloredImageFilename, coloredImage)
 
+
 if len(sys.argv) == 1:
-    #main('2014-10-29 13.45.09.jpg')
+    # main('2014-10-29 13.45.09.jpg')
     print("Program called with no input files.")
     print("Drag a file onto the program.")
     var = raw_input("Please enter something: ")
 
 for k in range(len(sys.argv) - 1):
     main(sys.argv[k + 1])
-
-
