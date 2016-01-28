@@ -82,6 +82,13 @@ See: http://freemind.sourceforge.net/
 			<xsl:text>\\</xsl:text>
 		</xsl:if>
 
+		<xsl:value-of select="count(child::node)"/>
+		<xsl:text> main topics -- </xsl:text>
+		<xsl:value-of select="count(child::*/child::node)"/>
+		<xsl:text> subtopics -- </xsl:text>
+		<xsl:value-of select="count(child::*/child::*/child::node)"/>
+		<xsl:text> content slides \\</xsl:text>
+
 		<xsl:apply-templates/>
 
 		<xsl:text>
