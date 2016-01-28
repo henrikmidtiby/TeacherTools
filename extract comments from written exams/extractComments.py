@@ -104,7 +104,7 @@ def split_comment(comment):
     :param comment: The comment text string that should be analyzed.
     :return: Tuple with the values, exerciseid, number of awarded points and a text string with comments.
     """
-    val = re.match("([0123456789]+[abcde]) (\d+)\s*(.*)", comment)
+    val = re.match("([0123456789]+[abcdefghijklmnopqrstu]) (\d+)\s*(.*)", comment)
     if val:
         exercise = val.group(1)
         point = val.group(2)
