@@ -94,17 +94,15 @@ See: http://freemind.sourceforge.net/
 	<xsl:text>}</xsl:text>
 </xsl:if>
 
+<xsl:if test="node/attribute/@NAME = 'theme' ">
+	<xsl:text>
+
 % Beamer Theme
-<xsl:choose>
-	<xsl:when test="node/attribute/@NAME = 'theme' ">
-		<xsl:text>\usetheme[]{</xsl:text>
-		<xsl:value-of select="node/attribute[@NAME = 'theme']/@VALUE" disable-output-escaping="yes"/>
-		<xsl:text>}</xsl:text>
-	</xsl:when>
-	<xsl:otherwise>
-		<xsl:text>\usetheme[]{Darmstadt}</xsl:text>
-	</xsl:otherwise>
-</xsl:choose>
+\usetheme[]{</xsl:text>
+	<xsl:value-of select="node/attribute[@NAME = 'theme']/@VALUE" disable-output-escaping="yes"/>
+	<xsl:text>}</xsl:text>
+</xsl:if>
+
 
 <xsl:apply-templates/>
 
