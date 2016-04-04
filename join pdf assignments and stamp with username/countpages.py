@@ -14,11 +14,8 @@ import sys, os.path
 sys.path.append('/home/henrik/lib/python') 
 import os
 import re
-from pdfminer.psparser import PSKeyword, PSLiteral, LIT
 from pdfminer.pdfparser import PDFParser
 from pdfminer.pdfdocument import PDFDocument, PDFNoOutlines
-from pdfminer.pdftypes import PDFObjectNotFound, PDFValueError
-from pdfminer.pdftypes import PDFStream, PDFObjRef, resolve1, stream_value
 from pdfminer.pdfpage import PDFPage
 
 
@@ -39,16 +36,16 @@ def getNumberOfPagesInFile(filename):
 def main():
     command = "pdftk " 
 
-    subdirs = getListOfSubdirectories('./')
-    for subdir in subdirs:
+    subdirectories = get_list_of_subdirectories('./')
+    for subdir in sorted(subdirectories):
         print("\n\n=======================================")
         print("Subdir: %s" % subdir)
         assignment = subdir[2:]
         tempDir = subdir + '/'
-        files = getFilesInDirectory(tempDir)
+        files = get_files_in_firectory(tempDir)
         for file in files:
             print(file)
-            if(not file == "output.pdf"):
+            if not file == "output.pdf":
                 try:
                     fullFileName = assignment + "/" + file
                     fullFileNameOutput = assignment + "/" + "output.pdf"
@@ -71,12 +68,13 @@ def main():
     #os.system("ps2pdf temp.ps temp2.pdf")
     os.system("./gs-916-linux_x86 -dPDFA -dBATCH -dNOPAUSE -sProcessColorModel=DeviceCMYK -sDEVICE=pdfwrite -sOutputFile=output_filename.pdf outputfile.pdf")
 
+
 # Function for splitting comments in three parts:
 # * exerciseid
 # * awarded points
 # * comments.
 # This is returned as a tuple.
-def splitComment(comment):
+def split_comment(comment):
     val = re.match("([123456789]+[abcde]) (\d+)\s*(.*)", comment)
     if(val):
         exercise = val.group(1)
@@ -85,7 +83,7 @@ def splitComment(comment):
         return (exercise, point, comment)
     return ("NA", "NA", comment)
 
-def getListOfSubdirectories(path):
+def get_list_of_subdirectories(path):
     dirs = []
     files_in_dir = os.listdir(path)
     for file_in_dir in files_in_dir:
@@ -93,7 +91,7 @@ def getListOfSubdirectories(path):
             dirs.append(path + file_in_dir)
     return dirs
 
-def getFilesInDirectory(path):
+def get_files_in_firectory(path):
     files = []
     files_in_dir = os.listdir(path)
     for file_in_dir in files_in_dir:
