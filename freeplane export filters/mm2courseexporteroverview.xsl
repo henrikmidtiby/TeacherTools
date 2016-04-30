@@ -27,6 +27,16 @@ See: http://freemind.sourceforge.net/
 %Packages to be included
 \usepackage[latin1]{inputenc}
 \usepackage{multicol}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.1pt}
+\lhead[]{}
+\chead[]{}
+\rhead[]{}
+\lfoot[]{\today}
+\cfoot[]{}
+\rfoot[]{\thepage}
 
 </xsl:text>
 <!--
