@@ -100,6 +100,9 @@ See: http://freemind.sourceforge.net/
 		\noindent
 		</xsl:text>
 		<xsl:value-of select="@TEXT" disable-output-escaping="yes"/>
+		<xsl:text> (</xsl:text>
+		<xsl:value-of select="count(child::*/child::node)"/>
+		<xsl:text> slides)</xsl:text>
 		<xsl:text>
 		{\footnotesize
 		\begin{multicols}{2}
