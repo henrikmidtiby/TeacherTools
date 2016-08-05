@@ -168,8 +168,7 @@ latexmk -pdf -pvc lecture</xsl:text>
 
 % Packages to be included
 \usepackage[latin1]{inputenc}
-\usepackage{hsmpresentation}
-\usetheme[]{Goettingen}</xsl:text>
+\usepackage{hsmpresentation}</xsl:text>
 <!-- Currently loading packages from options fails... -->
 <!-- Currently loading packages from options fails... -->
 <!-- Currently loading packages from options fails... -->
