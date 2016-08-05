@@ -73,25 +73,25 @@ See: http://freemind.sourceforge.net/
 <xsl:template match="node">
 	<xsl:if test="(count(ancestor::node())-2)=0">
 		<xsl:apply-templates/>
-		<xsl:text>
-		\end{document}
-		</xsl:text>
+		<xsl:text>\end{document}</xsl:text>
 	</xsl:if>
 	<xsl:if test="(count(ancestor::node())-2)=1">
-		<xsl:text disable-output-escaping="yes">
-		\section{</xsl:text><xsl:value-of select="current()/@TEXT" disable-output-escaping="yes"/><xsl:text>}</xsl:text>
+		<xsl:text disable-output-escaping="yes">\section{</xsl:text>
+		<xsl:value-of select="current()/@TEXT" disable-output-escaping="yes"/>
+		<xsl:text>}</xsl:text>
 
 		<xsl:if test="current()/attribute/@NAME = 'subtitle' ">
-			<xsl:text>&#xD;subtitle: </xsl:text>
+			<xsl:text>&#xA;subtitle: </xsl:text>
 			<xsl:value-of select="current()/attribute[@NAME = 'subtitle']/@VALUE" disable-output-escaping="yes"/>
 			<xsl:text>\\</xsl:text>
 		</xsl:if>
 		<xsl:if test="current()/attribute/@NAME = 'date' ">
-			<xsl:text>&#xD;date: </xsl:text>
+			<xsl:text>&#xA;\hfill date: </xsl:text>
 			<xsl:value-of select="current()/attribute[@NAME = 'date']/@VALUE" disable-output-escaping="yes"/>
-			<xsl:text>\\</xsl:text>
+			<xsl:text>\par</xsl:text>
 		</xsl:if>
 
+		<xsl:text>&#xA;\hfill </xsl:text>
 		<xsl:value-of select="count(child::node)"/>
 		<xsl:text> main topics -- </xsl:text>
 		<xsl:value-of select="count(child::*/child::node)"/>
@@ -101,36 +101,26 @@ See: http://freemind.sourceforge.net/
 
 		<xsl:apply-templates/>
 
-		<xsl:text>
-		\newpage
-		</xsl:text>
+		<xsl:text>&#xA;\newpage</xsl:text>
 	</xsl:if>
 	<xsl:if test="(count(ancestor::node())-2)=2">
-		<xsl:text>
-		\noindent
-		</xsl:text>
+		<xsl:text>\noindent &#xA;</xsl:text>
 		<xsl:value-of select="@TEXT" disable-output-escaping="yes"/>
 		<xsl:text> (</xsl:text>
 		<xsl:value-of select="count(child::*/child::node)"/>
 		<xsl:text> slides)</xsl:text>
-		<xsl:text>
-		{\footnotesize
-		\begin{multicols}{2}
-		</xsl:text>
+		<xsl:text>&#xA;{\footnotesize</xsl:text>
+		<xsl:text>&#xA;\begin{multicols}{2}</xsl:text>
 		<xsl:apply-templates/>
-		<xsl:text>
-		\end{multicols}
-		}
-		</xsl:text>
+		<xsl:text>&#xA;\end{multicols}</xsl:text>
+		<xsl:text>&#xA;}&#xA;</xsl:text>
 	</xsl:if>
 	<xsl:if test="(count(ancestor::node())-2)=3">
-		<xsl:text>
-		\noindent
-		</xsl:text>
+		<xsl:text>\noindent &#xA;</xsl:text>
 		<xsl:value-of select="@TEXT" disable-output-escaping="yes"/>
-		<xsl:apply-templates/>
-	</xsl:if>
-	<xsl:if test="(count(ancestor::node())-2)=4"> <!-- We are starting a frame-->
+		<xsl:text> (</xsl:text>
+		<xsl:value-of select="count(child::node)"/>
+		<xsl:text> slides)</xsl:text>
 	</xsl:if>
 </xsl:template>
 
