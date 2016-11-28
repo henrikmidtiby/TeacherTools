@@ -1,0 +1,95 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{todonotes}
+\usepackage{graphicx}
+\usepackage[colorlinks, linkcolor=blue, citecolor=blue, urlcolor=blue]{hyperref}
+
+\title{Latex Beamer Course exporter -- Freeplane export filters}
+\author{Henrik Skov Midtiby}
+
+\begin{document}
+\maketitle
+
+This document describes how the freeplane export filters 
+\emph{Latex Beamer Course exporter (.tex)} and 
+\emph{Latex Beamer Course outline exporter (.tex)} can be used.
+The two export filters was developed by Henrik Skov Midtiby
+during 2015 and 2016, for simplifying handling of lecture
+notes for two classes.
+
+
+The export filters has been based on mm\_xslt\_exports
+export filters by Igor G. Olaizola
+\footnote{\url{https://github.com/igor-go/mm_xslt_exports}}.
+
+\section{Getting started}
+
+\subsection{Installation}
+
+\begin{enumerate}
+\item	Download the export filters from my
+\href{https://github.com/henrikmidtiby/TeacherTools/tree/master/freeplane%20export%20filters}{github repository}.
+\item	Place the files (mm2courseexporter.xsl and mm2courseexporteroverview.xsl) in the \texttt{freeplane-1.3.15/resources/xslt} directory.
+\item	Launch freeplane.
+\end{enumerate}
+
+\subsection{What is placed where}
+
+In the mindmap that should be exported to beamer slides, 
+the export filters makes the following assumptions about
+the content of the different nodes, based on their distance 
+to the root node.
+\begin{description}
+\item[level 0 (root node)] Course name	
+\item[level 1]	Name of the lecture
+\item[level 2]	Name of current topic
+\item[level 3] 	Name of current subtopic
+\item[level 4]	Actual slides 	
+\end{description}
+
+\section{Options }
+
+\subsection{Level 0 -- Course name}
+
+\begin{description}
+\item[]	
+\item[]	
+\item[]	
+\end{description}
+
+\subsection{Level 1 -- Lecture name}
+
+\begin{description}
+\item[]	
+\item[]	
+\item[]	
+\end{description}
+
+
+\subsection{Level 2 -- Topic}
+
+\begin{description}
+\item[]	
+\item[]	
+\item[]	
+\end{description}
+
+\subsection{Level 3 -- Subtopic}
+
+\begin{description}
+\item[]	
+\item[]	
+\item[]	
+\end{description}
+
+\subsection{Level 4 -- Slide}
+
+\begin{description}
+\item[]	
+\item[]	
+\item[]	
+\end{description}
+
+
+
+\end{document}
