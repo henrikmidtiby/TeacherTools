@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Terminal=false
+Name=Image Cleaner drop spot
+Exec=python /home/henrik/Dropbox/Camera\ Uploads/imagecleaner.py %U
+Icon=/home/henrik/.local/share/applications/imagecleaner.svg
