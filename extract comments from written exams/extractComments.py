@@ -16,6 +16,14 @@ import re
 from pdfminer.pdfparser import PDFParser
 from pdfminer.pdfdocument import PDFDocument
 from pdfminer.pdftypes import PDFObjectNotFound
+import percache
+import tempfile
+import os
+TESTFILE = os.path.join(tempfile.gettempdir(), "doilookup.cache")
+cache = percache.Cache(TESTFILE, livesync=True)
+
+from collections import namedtuple
+FilenameAndTimestamp = namedtuple("FilenameAndTimestamp", ["filename", "timestamp"])
 
 
 # dump_comments
@@ -55,7 +63,16 @@ def get_comments_in_pdf_file(filename):
     :param filename: Name of pdf file to analyse.
     :return: List of comments found in the pdf file.
     """
-    fp = file(filename, 'rb')
+    timestamp = os.path.getmtime(filename)
+    temp = FilenameAndTimestamp(filename=filename,
+                                timestamp=timestamp)
+    print(temp)
+    return get_comments_in_pdf_file_with_timestamp(temp)
+
+
+@cache
+def get_comments_in_pdf_file_with_timestamp(filenameandtimestamp):
+    fp = file(filenameandtimestamp.filename, 'rb')
     parser = PDFParser(fp)
     doc = PDFDocument(parser)
     comments = dump_comments(doc)
