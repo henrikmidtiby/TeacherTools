@@ -7,6 +7,7 @@ import sys
 import numpy as np
 import cv2
 
+
 def locate_first_and_last_false(input_list):
     first_index_of_false_value = -1
     last_index_of_false_value = -1
