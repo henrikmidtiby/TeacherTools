@@ -4,28 +4,41 @@
 \usepackage{graphicx}
 \usepackage[textwidth=4cm]{todonotes}
 \usepackage[linkcolor=blue, colorlinks]{hyperref}
-
+\usepackage[left=2cm, right=7cm, top=2cm, bottom=2cm]{geometry}
+\usepackage{array}
 
 \begin{document}
  
 
-\newpage
+\section*{Comments}
+
 <<echo=FALSE>>=
-library(ggplot2)
-library(plyr)
+suppressMessages(library(tidyverse))
 data <- read.table('statistics', sep='\t', encoding='ascii', header=T)
+# Extract data about page offsets based on comments like "p = 4" place on page 4.
+data %>%
+  mutate(Page = as.integer(Page), 
+         pageoffset = cummax(ifelse(str_detect(Comment, '[pP]\\s*=\\s*(\\d+)'), Page - as.integer(str_extract(Comment, '\\d+')), 0)), 
+         realpage = Page - pageoffset) %>%
+  filter(!str_detect(Comment, '[pP]\\s*=\\s*(\\d+)'))-> filtered_data
 @
 
-\begin{longtable}{l l}
-\textbf{Side} & \textbf{Kommentar} \\
+
+\begin{longtable}{l l p{11cm}}
+\textbf{Side} & \textbf{Side} & \textbf{Kommentar} \\
 \hline
 \endhead
 <<results='asis', echo=FALSE>>=
-for(tempIdx in seq(1, nrow(data)))
+for(tempIdx in seq(1, nrow(filtered_data)))
 {
-  cat(sprintf("%s & %s \\\\\n",
-      data[tempIdx, ]$Page,
-      data[tempIdx, ]$Comment))
+  if(tempIdx %% 5 == 1)
+  {
+    cat("\\hline \n")
+  }
+  cat(sprintf("%d & %d & %s \\\\\n",
+      as.integer(filtered_data[tempIdx, ]$Page),
+      filtered_data[tempIdx, ]$realpage,
+      filtered_data[tempIdx, ]$Comment))
 }
 @
 \end{longtable}
