@@ -71,6 +71,7 @@ See: http://freemind.sourceforge.net/
 
 	<xsl:call-template name="showlecturesubtitle"/>
 	<xsl:call-template name="showlecturedate"/>
+	<xsl:call-template name="showlecturefilename"/>
 
 	<xsl:text>&#xA;\hfill </xsl:text>
 	<xsl:value-of select="count(child::node)"/>
@@ -97,6 +98,17 @@ See: http://freemind.sourceforge.net/
 		<xsl:value-of select="current()/attribute[@NAME = 'date']/@VALUE" disable-output-escaping="yes"/>
 		<xsl:text>\par</xsl:text>
 	</xsl:if>
+</xsl:template>
+
+
+<xsl:template name="showlecturefilename">
+	<xsl:variable name="count">
+		<xsl:number/>
+	</xsl:variable>
+	<xsl:text>&#xA;\hfill filename: lecture</xsl:text>
+	<xsl:value-of select='format-number($count, "000")'/>
+	<xsl:text>.tex</xsl:text>
+	<xsl:text>\par</xsl:text>
 </xsl:template>
 
 
