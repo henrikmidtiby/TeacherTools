@@ -1,5 +1,5 @@
 <?xml version='1.0'?>
-<!--MINDMAPEXPORTFILTER tex  Latex Beamer Course exporter all lectures
+<!--MINDMAPEXPORTFILTER tex  Latex Beamer Course exporter all lectures - obsolete version - mm2courseexporteralllectures
 License     : This code is released under the GPL. [http://www.gnu.org/copyleft/gpl.html]
 Document    : mm2latexbeamer_richcontent.xsl based on mm2latexbeamer 
 Description : Transforms freemind mm format to latex beamer presentations.

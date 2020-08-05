@@ -1,5 +1,5 @@
 <?xml version='1.0'?>
-<!--MINDMAPEXPORTFILTER tex  Latex Beamer Course outline exporter
+<!--MINDMAPEXPORTFILTER tex  Latex Beamer Course outline exporter - mm2courseexporteroverview.xsl
 License     : This code is released under the GPL. [http://www.gnu.org/copyleft/gpl.html]
 Document    : mm2courseexporteroverview.xsl 
 Description : Transforms freemind mm format to latex course outline.
