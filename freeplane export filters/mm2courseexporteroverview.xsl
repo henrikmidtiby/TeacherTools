@@ -167,7 +167,7 @@ See: http://freemind.sourceforge.net/
 	<xsl:variable name="count">
 		<xsl:number/>
 	</xsl:variable>
-	<xsl:text>\begin{filecontents*}{lecture</xsl:text>
+	<xsl:text>\begin{filecontents*}[overwrite]{lecture</xsl:text>
 	<xsl:value-of select='format-number($count, "000")'/>
 	<xsl:text>.sh}</xsl:text>
 	<xsl:text>&#xA;</xsl:text>
@@ -187,7 +187,7 @@ latexmk -pdf -pvc lecture</xsl:text>
 	<xsl:variable name="count">
 		<xsl:number/>
 	</xsl:variable>
-	<xsl:text>\begin{filecontents*}{lecture</xsl:text>
+	<xsl:text>\begin{filecontents*}[overwrite]{lecture</xsl:text>
 	<xsl:value-of select='format-number($count, "000")'/>
 	<xsl:text>.tex}</xsl:text>
 
